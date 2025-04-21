@@ -37,7 +37,6 @@ const Todo = () => {
     setTodos(updated);
   };
 
-  // Новая функция сортировки
   const handleSort = () => {
     const sorted = [...todos].sort((a, b) => a.localeCompare(b));
     setTodos(sorted);
@@ -56,7 +55,7 @@ const Todo = () => {
         <button onClick={handleAdd}>
           {editIndex !== null ? "Update" : "Add"}
         </button>
-        <button onClick={handleSort}>Sort</button> {/* Кнопка сортировки */}
+        <button onClick={handleSort}>Sort</button> 
       </div>
 
       <ul>
