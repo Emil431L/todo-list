@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import './Todo.css';
+import './Todo.css'; 
 
 const Todo = () => {
   const [todos, setTodos] = useState(() => {
@@ -37,11 +37,6 @@ const Todo = () => {
     setTodos(updated);
   };
 
-  const handleSort = () => {
-    const sorted = [...todos].sort((a, b) => a.localeCompare(b));
-    setTodos(sorted);
-  };
-
   return (
     <div className="todo-container">
       <h2>Todo List</h2>
@@ -55,7 +50,6 @@ const Todo = () => {
         <button onClick={handleAdd}>
           {editIndex !== null ? "Update" : "Add"}
         </button>
-        <button onClick={handleSort}>Sort</button> 
       </div>
 
       <ul>
