@@ -1,74 +1,175 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from 'react';
+// import './Todo.css';
+
+// const App = () => {
+
+//     const [todos, setTodos] = useState(() => {
+
+//         const stored = localStorage.getItem("todos")
+//         return stored ? JSON.parse(stored) : []
+//     })
+
+//     const [input, setInput] = useState('')
+//     const [isEditting, setIsEditting] = useState(false)
+//     const [currentIndex, setCurrentIndex] = useState(null)
+
+//     const handleClick = () => {
+//         if (input.trim()) {
+
+//             const newTodos = [...todos, input] 
+//             setTodos(newTodos)
+//             setInput('')
+//         }
+//     }
+
+//     const handleDelete = (indexToDelete) => {
+
+//         const newTodos = todos.filter((_, index) => index !== indexToDelete)
+//         setTodos(newTodos)
+//     }
+
+//     const handleEdit = (index) => {
+//         setInput(todos[index])
+//         setIsEditting(true)
+//         setCurrentIndex(index)
+//     }
+
+//     const handleUpdate = () => {
+//         if(input.trim() && currentIndex !== null) {
+//             const updatedTodos = [...todos]
+//             updatedTodos[currentIndex] = input
+//             setTodos(updatedTodos)
+//             setInput('')
+//             setIsEditting(false)
+//             setCurrentIndex(null)
+//         }
+//     }
+
+//     useEffect(() => {
+//         localStorage.setItem("todos", JSON.stringify(todos))
+//     }, [todos])
+
+//     return (
+//         <div>
+//             <h2>Todo List</h2>
+
+//             <input 
+//             type="text"
+//             placeholder="Enter a task"
+//             value={input}
+//             onChange={(e) => setInput(e.target.value)}
+//             />
+
+//             {isEditting ? (
+//                 <button onClick={handleUpdate}>Update</button>
+//             ) : (      
+//             <button onClick={handleClick}>Add</button>
+//             )}
+
+//             <ul>
+//                 {todos.map((op, index) => (
+//                     <li key={index}>{op}
+//                     <button onClick={() => handleEdit(index)}>Edit</button>
+//                     <button onClick={() => handleDelete(index)}>Delete</button>
+//                     </li>
+//                 ))}
+//             </ul>
+//         </div>
+//     )
+// }
+
+// export default App;
+
+
+
+
+
+import React, { useState, useEffect } from 'react';
 import './Todo.css';
 
-const Todo = () => {
-  const [todos, setTodos] = useState(() => {
-    const stored = localStorage.getItem("todos");
-    return stored ? JSON.parse(stored) : [];
-  });
+const App = () => {
 
-  const [input, setInput] = useState("");
-  const [editIndex, setEditIndex] = useState(null);
+    const [todos, setTodos] = useState(() => {
+        const stored = localStorage.getItem("todos");
+        return stored ? JSON.parse(stored) : [];
+    });
 
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
+    const [input, setInput] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(null);
 
-  const handleAdd = () => {
-    if (!input.trim()) return;
-    if (editIndex !== null) {
-      const updated = [...todos];
-      updated[editIndex] = input;
-      setTodos(updated);
-      setEditIndex(null);
-    } else {
-      setTodos([...todos, input]);
-    }
-    setInput("");
-  };
+    const handleClick = () => {
+        if (input.trim()) {
+            const newTodo = {
+                text: input,
+                date: new Date().toISOString(),
+            };
+            const newTodos = [...todos, newTodo].sort((a, b) => new Date(b.date) - new Date(a.date));
+            setTodos(newTodos);
+            setInput('');
+        }
+    };
 
-  const handleEdit = (index) => {
-    setInput(todos[index]);
-    setEditIndex(index);
-  };
+    const handleDelete = (indexToDelete) => {
+        const newTodos = todos.filter((_, index) => index !== indexToDelete);
+        setTodos(newTodos);
+    };
 
-  const handleDelete = (index) => {
-    const updated = todos.filter((_, i) => i !== index);
-    setTodos(updated);
-  };
+    const handleEdit = (index) => {
+        setInput(todos[index].text);
+        setIsEditing(true);
+        setCurrentIndex(index);
+    };
 
-  const handleSort = () => {
-    const sorted = [...todos].sort((a, b) => a.localeCompare(b));
-    setTodos(sorted);
-  };
+    const handleUpdate = () => {
+        if (input.trim() && currentIndex !== null) {
+            const updatedTodos = [...todos];
+            updatedTodos[currentIndex] = {
+                text: input,
+                date: updatedTodos[currentIndex].date, 
+            };
+            const sortedTodos = updatedTodos.sort((a, b) => new Date(b.date) - new Date(a.date));
+            setTodos(sortedTodos);
+            setInput('');
+            setIsEditing(false);
+            setCurrentIndex(null);
+        }
+    };
 
-  return (
-    <div className="todo-container">
-      <h2>Todo List</h2>
-      <div className="input-group">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter a task"
-        />
-        <button onClick={handleAdd}>
-          {editIndex !== null ? "Update" : "Add"}
-        </button>
-        <button onClick={handleSort}>Sort</button> 
-      </div>
+    useEffect(() => {
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }, [todos]);
 
-      <ul>
-        {todos.map((todo, index) => (
-          <li key={index}>
-            {todo}{" "}
-            <button onClick={() => handleEdit(index)}>Edit</button>{" "}
-            <button onClick={() => handleDelete(index)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    return (
+        <div className="todo-container">
+            <h2>Todo List</h2>
+
+            <input 
+                type="text"
+                placeholder="Enter a task"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+            />
+
+            {isEditing ? (
+                <button onClick={handleUpdate}>Update</button>
+            ) : (      
+                <button onClick={handleClick}>Add</button>
+            )}
+
+            <ul>
+                {todos.map((todo, index) => (
+                    <li key={index}>
+                        {todo.text}
+                        <div className="button-group">
+                            <button onClick={() => handleEdit(index)}>Edit</button>
+                            <button onClick={() => handleDelete(index)}>Delete</button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 
-export default Todo;
+export default App;
