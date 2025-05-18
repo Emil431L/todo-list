@@ -4,7 +4,7 @@ const initialState = {
   input: "",
   list: [],
   isEditing: false,
-  currentIndex: null,
+  currentId: null,
 };
 
 const todoSlice = createSlice({
@@ -29,22 +29,22 @@ const todoSlice = createSlice({
       const id = action.payload;
       state.list = state.list.filter((todo) => todo.id !== id);
     },
-    removeTodo(state, action) {
+    editTodo(state, action) {
       const id = action.payload;
       const todo = state.list.find((todo) => todo.id === id);
       if (todo) {
         state.isEditing = true;
-        state.currentIndex = id;
+        state.currentId = id;
         state.input = todo.text;
       }
     },
     updateTodo(state) {
       if (state.input.trim() && state.currentIndex !== null) {
-        const Todos = state.list.find((todo) => todo.id === state.currentIndex);
+        const Todos = state.list.find((todo) => todo.id === state.currentId);
         if (Todos) {
           Todos.text = state.input;
           state.isEditing = false;
-          state.currentIndex = null;
+          state.currentId = null;
           state.input = "";
         }
       }
@@ -52,6 +52,6 @@ const todoSlice = createSlice({
   },
 });
 
-export const { setInput, addTodo, setDelete, removeTodo, updateTodo } =
+export const { setInput, addTodo, setDelete, editTodo, updateTodo } =
   todoSlice.actions;
 export default todoSlice.reducer;

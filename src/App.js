@@ -1,11 +1,12 @@
 import React from "react";
-import TodoForm from "./components/TodoForm";
+import TodoInput from "./components/TodoInput";
 import TodoList from "./components/TodoList";
 
 const App = () => {
   return (
     <div>
-      <TodoForm />
+      <h2>Todo List</h2>
+      <TodoInput />
       <TodoList />
     </div>
   );
