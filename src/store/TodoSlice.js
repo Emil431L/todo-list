@@ -19,6 +19,7 @@ const todoSlice = createSlice({
         id: nanoid(),
         text: state.input,
         createdAt: new Date().toISOString(),
+        completed: false, 
       };
       if (state.input.trim()) {
         state.list.push(newTodo);
@@ -26,32 +27,42 @@ const todoSlice = createSlice({
       }
     },
     setDelete(state, action) {
-      const id = action.payload;
-      state.list = state.list.filter((todo) => todo.id !== id);
+      state.list = state.list.filter((todo) => todo.id !== action.payload);
     },
     editTodo(state, action) {
-      const id = action.payload;
-      const todo = state.list.find((todo) => todo.id === id);
+      const todo = state.list.find((todo) => todo.id === action.payload);
       if (todo) {
         state.isEditing = true;
-        state.currentId = id;
+        state.currentId = todo.id;
         state.input = todo.text;
       }
     },
     updateTodo(state) {
-      if (state.input.trim() && state.currentIndex !== null) {
-        const Todos = state.list.find((todo) => todo.id === state.currentId);
-        if (Todos) {
-          Todos.text = state.input;
+      if (state.input.trim() && state.currentId !== null) {
+        const todo = state.list.find((todo) => todo.id === state.currentId);
+        if (todo) {
+          todo.text = state.input;
           state.isEditing = false;
           state.currentId = null;
           state.input = "";
         }
       }
     },
+    toggleComplete(state, action) {
+      const todo = state.list.find((todo) => todo.id === action.payload);
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    },
   },
 });
 
-export const { setInput, addTodo, setDelete, editTodo, updateTodo } =
-  todoSlice.actions;
+export const {
+  setInput,
+  addTodo,
+  setDelete,
+  editTodo,
+  updateTodo,
+  toggleComplete, 
+} = todoSlice.actions;
 export default todoSlice.reducer;
