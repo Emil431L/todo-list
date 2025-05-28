@@ -1,3 +1,7 @@
+import React from "react";
+import TodoInput from "./components/TodoInput";
+import TodoList from "./components/TodoList";
+
 import React, { useState, useEffect } from "react";
 import './Todo.css';
 
@@ -42,9 +46,14 @@ const Todo = () => {
     setTodos(sorted);
   };
 
+const App = () => {
   return (
-    <div className="todo-container">
+    <div>
       <h2>Todo List</h2>
+
+      <TodoInput />
+      <TodoList />
+
       <div className="input-group">
         <input
           type="text"
@@ -67,8 +76,9 @@ const Todo = () => {
           </li>
         ))}
       </ul>
+
     </div>
   );
 };
 
-export default Todo;
+export default App;
