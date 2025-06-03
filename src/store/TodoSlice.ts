@@ -1,6 +1,12 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 
-export interface Todo { 
+export enum FilterStatus {
+  ALL = "all",
+  ACTIVE = "active",
+  COMPLETED = "completed",
+}
+
+export interface Todo {
   id: string,
   text: string,
   createdAt: string,
@@ -11,7 +17,8 @@ interface TodoState {
   input: string,
   list: Todo[],
   isEditing: boolean,
-  currentId: string | null
+  currentId: string | null,
+  filter: FilterStatus
 }
 
 const initialState: TodoState = {
@@ -19,6 +26,7 @@ const initialState: TodoState = {
   list: [],
   isEditing: false,
   currentId: null,
+  filter: FilterStatus.ALL
 };
 
 const todoSlice = createSlice({
@@ -33,7 +41,7 @@ const todoSlice = createSlice({
         id: nanoid(),
         text: state.input,
         createdAt: new Date().toISOString(),
-        completed: false, 
+        completed: false,
       };
       if (state.input.trim()) {
         state.list.push(newTodo);
@@ -68,6 +76,9 @@ const todoSlice = createSlice({
         todo.completed = !todo.completed;
       }
     },
+    setFilter(state, action: PayloadAction<FilterStatus>) {
+      state.filter = action.payload;
+    }
   },
 });
 
@@ -77,8 +88,8 @@ export const {
   setDelete,
   editTodo,
   updateTodo,
-  toggleComplete, 
+  toggleComplete,
+  setFilter
 } = todoSlice.actions;
+
 export default todoSlice.reducer;
-
-
