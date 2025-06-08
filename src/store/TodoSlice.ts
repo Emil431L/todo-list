@@ -1,58 +1,61 @@
-import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
 
-export enum FilterStatus {
-  ALL = "all",
-  ACTIVE = "active",
-  COMPLETED = "completed",
+export enum Filter {
+  All = 'All',
+  Active = 'Active',
+  Completed = 'Completed',
 }
 
-export interface Todo {
-  id: string,
-  text: string,
-  createdAt: string,
-  completed: boolean
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+  priority: 'low' | 'medium' | 'high'
 }
 
 interface TodoState {
-  input: string,
-  list: Todo[],
-  isEditing: boolean,
-  currentId: string | null,
-  filter: FilterStatus
+  input: string;
+  list: Todo[];
+  isEditing: boolean;
+  currentId: string | null;
+  filter: Filter;
+  priority: 'low' | 'medium' | 'high'
+  priorityFilter: 'all' | 'low' | 'medium' | 'high'
 }
 
 const initialState: TodoState = {
-  input: "",
+  input: '',
   list: [],
   isEditing: false,
   currentId: null,
-  filter: FilterStatus.ALL
+  filter: Filter.All,
+  priority: 'low',
+  priorityFilter: 'all'
 };
 
-const todoSlice = createSlice({
-  name: "todos",
+const TodoSlice = createSlice({
+  name: 'todos',
   initialState,
   reducers: {
     setInput(state, action: PayloadAction<string>) {
       state.input = action.payload;
     },
-    addTodo(state) {
-      const newTodo: Todo = {
-        id: nanoid(),
-        text: state.input,
-        createdAt: new Date().toISOString(),
-        completed: false,
-      };
+    AddTodo(state) {
       if (state.input.trim()) {
-        state.list.push(newTodo);
-        state.input = "";
+        state.list.push({
+          id: nanoid(),
+          text: state.input,
+          completed: false,
+          priority: state.priority
+        });
+        state.input = '';
       }
     },
     setDelete(state, action: PayloadAction<string>) {
       state.list = state.list.filter((todo) => todo.id !== action.payload);
     },
     editTodo(state, action: PayloadAction<string>) {
-      const todo = state.list.find((todo) => todo.id === action.payload);
+      const todo = state.list.find((t) => t.id === action.payload);
       if (todo) {
         state.isEditing = true;
         state.currentId = todo.id;
@@ -61,35 +64,46 @@ const todoSlice = createSlice({
     },
     updateTodo(state) {
       if (state.input.trim() && state.currentId !== null) {
-        const todo = state.list.find((todo) => todo.id === state.currentId);
+        const todo = state.list.find((t) => t.id === state.currentId);
         if (todo) {
           todo.text = state.input;
+          state.input = '';
           state.isEditing = false;
           state.currentId = null;
-          state.input = "";
         }
       }
     },
-    toggleComplete(state, action: PayloadAction<string>) {
-      const todo = state.list.find((todo) => todo.id === action.payload);
+    setToggle(state, action: PayloadAction<string>) {
+      const todo = state.list.find((t) => t.id === action.payload);
       if (todo) {
         todo.completed = !todo.completed;
       }
     },
-    setFilter(state, action: PayloadAction<FilterStatus>) {
+
+    setFilter(state, action: PayloadAction<Filter>) {
       state.filter = action.payload;
+    },
+
+    setPriority(state, action: PayloadAction<'low' | 'medium' | 'high'>) {
+      state.priority = action.payload
+    },
+
+    setPriorityFilter(state, action: PayloadAction<'all' | 'low' | 'medium' | 'high'>) {
+      state.priorityFilter = action.payload
     }
   },
 });
 
 export const {
   setInput,
-  addTodo,
+  AddTodo,
   setDelete,
   editTodo,
   updateTodo,
-  toggleComplete,
-  setFilter
-} = todoSlice.actions;
+  setToggle,
+  setFilter,
+  setPriority,
+  setPriorityFilter
+} = TodoSlice.actions;
 
-export default todoSlice.reducer;
+export default TodoSlice.reducer;
