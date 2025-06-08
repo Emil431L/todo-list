@@ -1,25 +1,28 @@
-import React from "react";
-import TodoItem from "./TodoItem";
+import React from 'react';
 import { useAppSelector } from '../store/hooks';
-import { FilterStatus } from "../store/TodoSlice";
+import TodoItem from './TodoItem';
+import { Filter } from '../store/TodoSlice';
 
 const TodoList = () => {
   const list = useAppSelector((state) => state.todos.list);
   const filter = useAppSelector((state) => state.todos.filter);
+  const priorityFilter = useAppSelector((state) => state.todos.priorityFilter)
 
   const filteredList = list.filter((todo) => {
-    if (filter === FilterStatus.ACTIVE) return !todo.completed;
-    if (filter === FilterStatus.COMPLETED) return todo.completed;
-    return true;
-  });
+  const statusMatch =
+    (filter === Filter.All) ||
+    (filter === Filter.Active && !todo.completed) ||
+    (filter === Filter.Completed && todo.completed);
 
-  const sortedList = [...filteredList].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  const priorityMatch =
+    priorityFilter === 'all' || todo.priority === priorityFilter;
+
+  return statusMatch && priorityMatch;
+});
 
   return (
     <ul>
-      {sortedList.map((todo) => (
+      {filteredList.map((todo) => (
         <TodoItem key={todo.id} todo={todo} />
       ))}
     </ul>
@@ -27,3 +30,4 @@ const TodoList = () => {
 };
 
 export default TodoList;
+  
