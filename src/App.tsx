@@ -1,6 +1,7 @@
 import React from 'react';
 import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
+import FilterButtons from './components/FilterButtons'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
