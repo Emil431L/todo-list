@@ -46,7 +46,6 @@ const TodoInput = () => {
       </select>
 
       <PriorityFilterButtons/>
-
       <FilterButtons/>
     </div>
   );

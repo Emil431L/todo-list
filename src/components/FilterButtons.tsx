@@ -1,15 +1,19 @@
 import React from 'react'
-import {useAppDispatch} from '../store/hooks'
-import {setFilter, Filter} from '../store/TodoSlice'
-import {toast} from 'react-toastify'
+import { useAppDispatch } from '../store/hooks'
+import { setFilter, Filter } from '../store/TodoSlice'
 
-function FilterButtons() {
+const FilterButtons: React.FC = () => {
     const dispatch = useAppDispatch()
-    return(
+
+    const handleFilter = (filter: Filter) => {
+        dispatch(setFilter(filter))
+    }
+
+    return (
         <div>
-            <button onClick={() => dispatch(setFilter(Filter.All))}>All</button>
-            <button onClick={() => dispatch(setFilter(Filter.Active))}>Active</button>
-            <button onClick={() => dispatch(setFilter(Filter.Completed))}>Completed</button>
+            <button onClick={() => handleFilter(Filter.All)}>All</button>
+            <button onClick={() => handleFilter(Filter.Active)}>Active</button>
+            <button onClick={() => handleFilter(Filter.Completed)}>Completed</button>
         </div>
     )
 }

@@ -1,10 +1,9 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useAppDispatch } from '../store/hooks';
 import { setPriorityFilter } from '../store/TodoSlice';
 
 const PriorityFilterButtons = () => {
   const dispatch = useAppDispatch();
-  const priorityFilter = useAppSelector((state) => state.todos.priorityFilter);
 
   const handlePriority = (priority: 'all' | 'high' | 'medium' | 'low') => {
     dispatch(setPriorityFilter(priority));

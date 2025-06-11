@@ -2,23 +2,33 @@ import React from 'react';
 import { useAppSelector } from '../store/hooks';
 import TodoItem from './TodoItem';
 import { Filter } from '../store/TodoSlice';
+import {filterByProperty} from '../components/utils/FilterHelpers'
 
 const TodoList = () => {
   const list = useAppSelector((state) => state.todos.list);
   const filter = useAppSelector((state) => state.todos.filter);
-  const priorityFilter = useAppSelector((state) => state.todos.priorityFilter)
+  const priorityFilter = useAppSelector((state) => state.todos.priorityFilter);
 
-  const filteredList = list.filter((todo) => {
-  const statusMatch =
-    (filter === Filter.All) ||
-    (filter === Filter.Active && !todo.completed) ||
-    (filter === Filter.Completed && todo.completed);
+  const getFilteredList = () => {
 
-  const priorityMatch =
-    priorityFilter === 'all' || todo.priority === priorityFilter;
+    let result = list
 
-  return statusMatch && priorityMatch;
-});
+    if (filter === Filter.Completed) {
+      result = filterByProperty(result, 'completed', true)
+    }
+
+    else if (filter === Filter.Active) {
+      result = filterByProperty(result, 'completed', false)
+    }
+
+    if (priorityFilter !== 'all') {
+      result = filterByProperty(result, 'priority', priorityFilter)
+    }
+
+    return result
+  }
+
+  const filteredList = getFilteredList()
 
   return (
     <ul>
@@ -30,4 +40,3 @@ const TodoList = () => {
 };
 
 export default TodoList;
-  

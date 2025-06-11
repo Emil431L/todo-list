@@ -67,6 +67,7 @@ const TodoSlice = createSlice({
         const todo = state.list.find((t) => t.id === state.currentId);
         if (todo) {
           todo.text = state.input;
+          todo.priority = state.priority;
           state.input = '';
           state.isEditing = false;
           state.currentId = null;
