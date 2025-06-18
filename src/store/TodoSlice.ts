@@ -6,57 +6,48 @@ export enum Filter {
   Completed = 'Completed',
 }
 
+export type Priority = 'low' | 'medium' | 'high';
+export type PriorityFilter = Priority | 'all';
+
 interface Todo {
   id: string;
   text: string;
   completed: boolean;
-  priority: 'low' | 'medium' | 'high'
+  priority: Priority;
 }
 
 interface TodoState {
-  input: string;
   list: Todo[];
-  isEditing: boolean;
-  currentId: string | null;
   filter: Filter;
-  priority: 'low' | 'medium' | 'high'
-  priorityFilter: 'all' | 'low' | 'medium' | 'high'
+  priorityFilter: PriorityFilter;
 }
 
 const initialState: TodoState = {
-  input: '',
   list: [],
-  isEditing: false,
-  currentId: null,
   filter: Filter.All,
-  priority: 'low',
-  priorityFilter: 'all'
+  priorityFilter: 'all',
 };
 
 const TodoSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    AddTodo(state, action: PayloadAction<Pick<Todo, 'text' | 'priority'>>) {
+    AddTodo(state, action: PayloadAction<Omit<Todo, 'id' | 'completed'>>) {
       state.list.push({
         id: nanoid(),
         text: action.payload.text,
+        priority: action.payload.priority,
         completed: false,
-        priority: action.payload.priority
       });
-      state.input = '';
     },
     setDelete(state, action: PayloadAction<string>) {
       state.list = state.list.filter((todo) => todo.id !== action.payload);
     },
-    
-    updateTodo(state, action: PayloadAction<{id: string, text: string, priority: 'low' | 'medium' | 'high'}>) {
+    updateTodo(state, action: PayloadAction<Omit<Todo, 'completed'>>) {
       const todo = state.list.find((t) => t.id === action.payload.id);
       if (todo) {
         todo.text = action.payload.text;
         todo.priority = action.payload.priority;
-        state.isEditing = false;
-        state.currentId = null;
       }
     },
     setToggle(state, action: PayloadAction<string>) {
@@ -68,8 +59,8 @@ const TodoSlice = createSlice({
     setFilter(state, action: PayloadAction<Filter>) {
       state.filter = action.payload;
     },
-    setPriorityFilter(state, action: PayloadAction<'all' | 'low' | 'medium' | 'high'>) {
-      state.priorityFilter = action.payload
+    setPriorityFilter(state, action: PayloadAction<PriorityFilter>) {
+      state.priorityFilter = action.payload;
     },
   },
 });
